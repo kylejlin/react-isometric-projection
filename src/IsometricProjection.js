@@ -4,7 +4,7 @@ import createCoordCalculator from './createCoordCalculator';
 
 const SQRT3 = Math.sqrt(3);
 
-function IsometricProjection({ width, cx, cy, mesh }) {
+function IsometricProjection({ width, x, y, mesh }) {
   const calculate = createCoordCalculator(width);
   const [scale, ...polygons] = mesh;
   const scaledPolygons = polygons.map(([color, ...vertices]) => {
@@ -22,7 +22,7 @@ function IsometricProjection({ width, cx, cy, mesh }) {
   });
   
   return (
-    <g transform={`translate(${cx}, ${cy - (width / (2 * SQRT3))})`}>
+    <g transform={`translate(${x}, ${y})`}>
       {
         renderPolygons.map(([color, ...points], i) => {
           const pointsStr = points.map(p => p.join(',')).join(' ');

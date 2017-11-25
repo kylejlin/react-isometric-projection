@@ -98,8 +98,8 @@ var SQRT3 = Math.sqrt(3);
 
 function IsometricProjection(_ref) {
   var width = _ref.width,
-      cx = _ref.cx,
-      cy = _ref.cy,
+      x = _ref.x,
+      y = _ref.y,
       mesh = _ref.mesh;
 
   var calculate = (0, _createCoordCalculator2.default)(width);
@@ -161,7 +161,7 @@ function IsometricProjection(_ref) {
 
   return _react2.default.createElement(
     'g',
-    { transform: 'translate(' + cx + ', ' + (cy - width / (2 * SQRT3)) + ')' },
+    { transform: 'translate(' + x + ', ' + y + ')' },
     renderPolygons.map(function (_ref16, i) {
       var _ref17 = _toArray(_ref16),
           color = _ref17[0],
