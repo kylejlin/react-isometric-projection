@@ -119,41 +119,21 @@ function IsometricProjection(_ref) {
       });
     })));
   });
-  scaledPolygons.sort(function (_ref4, _ref5) {
-    var _ref7 = _toArray(_ref4),
-        aVertices = _ref7.slice(1);
-
-    var _ref6 = _toArray(_ref5),
-        bVertices = _ref6.slice(1);
-
-    var aGreatestVertexDistanceSquared = Math.max.apply(Math, _toConsumableArray(aVertices.map(function (_ref8) {
-      var _ref9 = _slicedToArray(_ref8, 3),
-          x = _ref9[0],
-          y = _ref9[1],
-          z = _ref9[2];
-
-      return x * x + y * y + z * z;
-    })));
-    var bGreatestVertexDistanceSquared = Math.max.apply(Math, _toConsumableArray(bVertices.map(function (_ref10) {
-      var _ref11 = _slicedToArray(_ref10, 3),
-          x = _ref11[0],
-          y = _ref11[1],
-          z = _ref11[2];
-
-      return x * x + y * y + z * z;
-    })));
+  /*scaledPolygons.sort(([, ...aVertices], [, ...bVertices]) => {
+    const aGreatestVertexDistanceSquared = Math.max(...aVertices.map(([x, y, z]) => x*x + y*y + z*z));
+    const bGreatestVertexDistanceSquared = Math.max(...bVertices.map(([x, y, z]) => x*x + y*y + z*z));
     return aGreatestVertexDistanceSquared - bGreatestVertexDistanceSquared;
-  });
-  var renderPolygons = scaledPolygons.map(function (_ref12) {
-    var _ref13 = _toArray(_ref12),
-        color = _ref13[0],
-        vertices = _ref13.slice(1);
+  });*/
+  var renderPolygons = scaledPolygons.map(function (_ref4) {
+    var _ref5 = _toArray(_ref4),
+        color = _ref5[0],
+        vertices = _ref5.slice(1);
 
-    return [color].concat(_toConsumableArray(vertices.map(function (_ref14) {
-      var _ref15 = _slicedToArray(_ref14, 3),
-          x = _ref15[0],
-          y = _ref15[1],
-          z = _ref15[2];
+    return [color].concat(_toConsumableArray(vertices.map(function (_ref6) {
+      var _ref7 = _slicedToArray(_ref6, 3),
+          x = _ref7[0],
+          y = _ref7[1],
+          z = _ref7[2];
 
       return calculate(x, y, z);
     })));
@@ -162,10 +142,10 @@ function IsometricProjection(_ref) {
   return _react2.default.createElement(
     'g',
     { transform: 'translate(' + x + ', ' + y + ')' },
-    renderPolygons.map(function (_ref16, i) {
-      var _ref17 = _toArray(_ref16),
-          color = _ref17[0],
-          points = _ref17.slice(1);
+    renderPolygons.map(function (_ref8, i) {
+      var _ref9 = _toArray(_ref8),
+          color = _ref9[0],
+          points = _ref9.slice(1);
 
       var pointsStr = points.map(function (p) {
         return p.join(',');
