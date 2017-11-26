@@ -6,6 +6,10 @@ const cube = (x, y, z, s, ...c) => {
   return rectPrism(x, y, z, s, s, s, ...c);
 };
 
+const polygon = (c, vertices) => {
+  return [c, ...vertices];
+};
+
 const rectPrism = (x, y, z, dx, dy, dz, ...c) => {
   const c1 = parseColors(c, 6);
   return [
@@ -30,6 +34,7 @@ const xzRect = (x, y, z, dx, dz, c) => {
   ];
 };
 
+/* TODO
 const xzRectPyramid = (x, y, z, dx, dy, dz, ...c) => {
   const c1 = parseColors(c, 5);
   return [
@@ -37,6 +42,7 @@ const xzRectPyramid = (x, y, z, dx, dy, dz, ...c) => {
     [c1[1], [x, y, z], []]
   ];
 };
+*/
 
 const yzRect = (x, y, z, dy, dz, c) => {
   return [
@@ -46,6 +52,7 @@ const yzRect = (x, y, z, dy, dz, c) => {
 
 export default {
   cube,
+  polygon,
   rectPrism,
   xyRect,
   xzRect,
