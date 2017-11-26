@@ -7,7 +7,7 @@ const cube = (x, y, z, s, ...c) => {
 };
 
 const polygon = (c, ...vertices) => {
-  return [c, ...vertices];
+  return [[c, ...vertices]];
 };
 
 const rectPrism = (x, y, z, dx, dy, dz, ...c) => {
