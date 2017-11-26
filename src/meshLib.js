@@ -6,7 +6,7 @@ const cube = (x, y, z, s, ...c) => {
   return rectPrism(x, y, z, s, s, s, ...c);
 };
 
-const polygon = (c, vertices) => {
+const polygon = (c, ...vertices) => {
   return [c, ...vertices];
 };
 
