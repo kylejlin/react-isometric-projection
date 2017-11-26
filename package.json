@@ -1,6 +1,6 @@
 {
   "name": "react-isometric-projection",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "An isometric projection React component built with SVG",
   "main": "build/index.js",
   "peerDependencies": {
