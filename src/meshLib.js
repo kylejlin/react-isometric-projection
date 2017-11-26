@@ -30,6 +30,14 @@ const xzRect = (x, y, z, dx, dz, c) => {
   ];
 };
 
+const xzRectPyramid = (x, y, z, dx, dy, dz, ...c) => {
+  const c1 = parseColors(c, 5);
+  return [
+    ...xzRect(x, y, z, dx, dz, c1[0]),
+    [c1[1], [x, y, z], []]
+  ];
+};
+
 const yzRect = (x, y, z, dy, dz, c) => {
   return [
     [c, [x, y, z], [x, y + dy, z], [x, y + dy, z + dz], [x, y, z + dz]]
