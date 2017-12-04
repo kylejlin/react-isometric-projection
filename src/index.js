@@ -1,7 +1,7 @@
-import IsometricProjection from './IsometricProjection';
-import meshLib from './meshLib';
+import IsometricProjection from './IsometricProjection'
+import meshLib from './meshLib/index'
 
 export {
   IsometricProjection,
   meshLib
-};
+}
