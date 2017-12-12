@@ -1,7 +1,7 @@
 const flattenTagsIntoPolyArr = (tags, offset = [0, 0, 0], scale = [1, 1, 1]) => {
   const [ox, oy, oz] = offset
   const [sx, sy, sz] = scale
-  
+
   return tags.reduce((arr, tag) => {
     if (tag.type === 'POLYGON') {
       return arr.concat([{
@@ -10,7 +10,7 @@ const flattenTagsIntoPolyArr = (tags, offset = [0, 0, 0], scale = [1, 1, 1]) => 
       }])
     } else if (tag.type === 'GROUP') {
       const [px, py, pz] = tag.position
-      
+
       const [gdx, gdy, gdz] = tag.dimensions
       const [gvbx, gvby, gvbz] = tag.viewBoxDimensions
       const [gsx, gsy, gsz] = [gdx / gvbx, gdy / gvby, gdz / gvbz]

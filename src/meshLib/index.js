@@ -5,11 +5,15 @@ import Polygon from './Polygon'
 import Pyramid from './Pyramid'
 import Rect from './Rect'
 
+import jsxToObj from './jsxToObj'
+
 export default {
   MeshDefinition,
   
   Group,
   Polygon,
   Pyramid,
-  Rect
+  Rect,
+  
+  jsxToObj
 }

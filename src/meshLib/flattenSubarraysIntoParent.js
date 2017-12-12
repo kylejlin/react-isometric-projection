@@ -1,0 +1,1 @@
+export default parentArr => parentArr.reduce((arr, item) => Array.isArray(item) ? arr.concat(item) : arr.concat([item]), [])

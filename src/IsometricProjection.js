@@ -1,30 +1,31 @@
 import React from 'react'
 
 import createCoordCalculator from './createCoordCalculator'
+import flattenTagsIntoPolyArr from './meshLib/flattenTagsIntoPolyArr'
+import sortByRenderOrder from './sortByRenderOrder'
 
-function IsometricProjection({ size, x, y, meshDef }) {
-  const calculate = createCoordCalculator(width)
-  const { viewBoxDimensions: vbd, polygons } = meshDef
-  const scaledPolygons = polygons.map(({ color, points }) => ({
-    color,
-    points: points.map(([x, y, z]) => [x / vbd.x, y / vbd.y, z / vbd.z])
-  }))
-  scaledPolygons.sort(({ points: a }, { points: b }) => {
-    const aGreatestPointSum = Math.max(...(a.map(([x, y, z]) => x + y + z)))
-    const bGreatestPointSum = Math.max(...(b.map(([x, y, z]) => x + y + z)))
-    return aGreatestPointSum - bGreatestPointSum
-  })
-  const renderPolygons = scaledPolygons.map(({ color, points }) => ({
+function IsometricProjection({ size, x, y, mesh: group }) {
+  const { viewBoxDimensions: vbd, children } = group
+
+  const scale = vbd.map(n => size / n)
+
+  const polygons = flattenTagsIntoPolyArr(children, [0, 0, 0], scale)
+
+  polygons.sort(sortByRenderOrder)
+
+  const calculate = createCoordCalculator(size)
+
+  const renderPolygons = polygons.map(({ color, points }) => ({
     color,
     points: points.map(([x, y, z]) => calculate(x, y, z))
   }))
-  
+
   return (
     <g transform={`translate(${x}, ${y})`}>
       {
         renderPolygons.map(({ color, points }, i) => {
           const pointsStr = points.map(p => p.join(',')).join(' ')
-          return <polygon key={i} points={pointStr} fill={color} />
+          return <polygon key={i} points={pointsStr} fill={color} />
         })
       }
     </g>

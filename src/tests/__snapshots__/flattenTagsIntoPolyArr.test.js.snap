@@ -1,0 +1,156 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`adjusts polgons in groups correctly 1`] = `
+Array [
+  Object {
+    "color": "red",
+    "points": Array [
+      Array [
+        0,
+        0,
+        0,
+      ],
+      Array [
+        0,
+        1,
+        0,
+      ],
+      Array [
+        0,
+        1,
+        1,
+      ],
+    ],
+  },
+  Object {
+    "color": "blue",
+    "points": Array [
+      Array [
+        1,
+        0,
+        1,
+      ],
+      Array [
+        1.5,
+        0,
+        2,
+      ],
+      Array [
+        2,
+        0,
+        2,
+      ],
+    ],
+  },
+]
+`;
+
+exports[`does not alter polygon array 1`] = `
+Array [
+  Object {
+    "color": "red",
+    "points": Array [
+      Array [
+        0,
+        0,
+        0,
+      ],
+      Array [
+        0,
+        1,
+        0,
+      ],
+      Array [
+        0,
+        1,
+        1,
+      ],
+    ],
+  },
+  Object {
+    "color": "green",
+    "points": Array [
+      Array [
+        0,
+        0,
+        0,
+      ],
+      Array [
+        1,
+        0,
+        0,
+      ],
+      Array [
+        1,
+        1,
+        0,
+      ],
+    ],
+  },
+]
+`;
+
+exports[`handles nested groups correctly 1`] = `
+Array [
+  Object {
+    "color": "red",
+    "points": Array [
+      Array [
+        0,
+        0,
+        0,
+      ],
+      Array [
+        0,
+        1,
+        0,
+      ],
+      Array [
+        0,
+        1,
+        1,
+      ],
+    ],
+  },
+  Object {
+    "color": "blue",
+    "points": Array [
+      Array [
+        1,
+        0,
+        1,
+      ],
+      Array [
+        1.5,
+        0,
+        2,
+      ],
+      Array [
+        2,
+        0,
+        2,
+      ],
+    ],
+  },
+  Object {
+    "color": "yellow",
+    "points": Array [
+      Array [
+        1.5,
+        0.5,
+        1.5,
+      ],
+      Array [
+        2.1666666666666665,
+        0.5,
+        1.5,
+      ],
+      Array [
+        3.5,
+        1.8333333333333333,
+        2.1666666666666665,
+      ],
+    ],
+  },
+]
+`;
