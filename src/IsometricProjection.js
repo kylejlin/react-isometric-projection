@@ -15,17 +15,20 @@ function IsometricProjection({ size, x, y, mesh: group }) {
 
   const calculate = createCoordCalculator(size)
 
-  const renderPolygons = polygons.map(({ color, points }) => ({
+  const renderPolygons = polygons.map(({ color, points, listeners }) => ({
     color,
-    points: points.map(([x, y, z]) => calculate(x, y, z))
+    points: points.map(([x, y, z]) => calculate(x, y, z)),
+    listeners
   }))
 
   return (
     <g transform={`translate(${x}, ${y})`}>
       {
-        renderPolygons.map(({ color, points }, i) => {
+        renderPolygons.map(({ color, points, listeners }, i) => {
           const pointsStr = points.map(p => p.join(',')).join(' ')
-          return <polygon key={i} points={pointsStr} fill={color} />
+
+          const sanitizedListeners = listeners // TODO: implement sanitization
+          return <polygon key={i} points={pointsStr} fill={color} {...sanitizedListeners} />
         })
       }
     </g>

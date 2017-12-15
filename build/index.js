@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -158,11 +158,29 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+exports.default = function (parentArr) {
+  return parentArr.reduce(function (arr, item) {
+    return Array.isArray(item) ? arr.concat(item) : arr.concat([item]);
+  }, []);
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var flattenTagsIntoPolyArr = function flattenTagsIntoPolyArr(tags) {
   var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [0, 0, 0];
   var scale = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [1, 1, 1];
+  var listeners = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
   var _offset = _slicedToArray(offset, 3),
       ox = _offset[0],
@@ -185,7 +203,8 @@ var flattenTagsIntoPolyArr = function flattenTagsIntoPolyArr(tags) {
               z = _ref2[2];
 
           return [ox + x * sx, oy + y * sy, oz + z * sz];
-        })
+        }),
+        listeners: listeners
       }]);
     } else if (tag.type === 'GROUP') {
       var _tag$position = _slicedToArray(tag.position, 3),
@@ -209,6 +228,10 @@ var flattenTagsIntoPolyArr = function flattenTagsIntoPolyArr(tags) {
 
 
       return arr.concat(flattenTagsIntoPolyArr(tag.children, [ox + px * sx, oy + py * sy, oz + pz * sz], [gsx, gsy, gsz]));
+    } else if (tag.type === 'LISTENER') {
+      var compoundedListeners = Object.assign({}, listeners, tag.listeners);
+
+      return arr.concat(flattenTagsIntoPolyArr(tag.children, offset, scale, compoundedListeners));
     } else {
       throw new Error('Illegal tag type: ' + tag.type);
     }
@@ -218,7 +241,7 @@ var flattenTagsIntoPolyArr = function flattenTagsIntoPolyArr(tags) {
 exports.default = flattenTagsIntoPolyArr;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -239,7 +262,7 @@ exports.default = function (colors, numberRequired) {
 };
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -249,21 +272,23 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _react = __webpack_require__(15);
+var _react = __webpack_require__(16);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _createCoordCalculator = __webpack_require__(7);
+var _createCoordCalculator = __webpack_require__(8);
 
 var _createCoordCalculator2 = _interopRequireDefault(_createCoordCalculator);
 
-var _flattenTagsIntoPolyArr = __webpack_require__(3);
+var _flattenTagsIntoPolyArr = __webpack_require__(4);
 
 var _flattenTagsIntoPolyArr2 = _interopRequireDefault(_flattenTagsIntoPolyArr);
 
-var _sortByRenderOrder = __webpack_require__(14);
+var _sortByRenderOrder = __webpack_require__(15);
 
 var _sortByRenderOrder2 = _interopRequireDefault(_sortByRenderOrder);
 
@@ -290,7 +315,8 @@ function IsometricProjection(_ref) {
 
   var renderPolygons = polygons.map(function (_ref2) {
     var color = _ref2.color,
-        points = _ref2.points;
+        points = _ref2.points,
+        listeners = _ref2.listeners;
     return {
       color: color,
       points: points.map(function (_ref3) {
@@ -300,7 +326,8 @@ function IsometricProjection(_ref) {
             z = _ref4[2];
 
         return calculate(x, y, z);
-      })
+      }),
+      listeners: listeners
     };
   });
 
@@ -309,12 +336,15 @@ function IsometricProjection(_ref) {
     { transform: 'translate(' + x + ', ' + y + ')' },
     renderPolygons.map(function (_ref5, i) {
       var color = _ref5.color,
-          points = _ref5.points;
+          points = _ref5.points,
+          listeners = _ref5.listeners;
 
       var pointsStr = points.map(function (p) {
         return p.join(',');
       }).join(' ');
-      return _react2.default.createElement('polygon', { key: i, points: pointsStr, fill: color });
+
+      var sanitizedListeners = listeners; // TODO: implement sanitization
+      return _react2.default.createElement('polygon', _extends({ key: i, points: pointsStr, fill: color }, sanitizedListeners));
     })
   );
 }
@@ -322,7 +352,7 @@ function IsometricProjection(_ref) {
 exports.default = IsometricProjection;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -332,11 +362,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _MeshDefinition = __webpack_require__(10);
+var _MeshDefinition = __webpack_require__(12);
 
 var _MeshDefinition2 = _interopRequireDefault(_MeshDefinition);
 
-var _Group = __webpack_require__(9);
+var _Group = __webpack_require__(10);
 
 var _Group2 = _interopRequireDefault(_Group);
 
@@ -344,11 +374,15 @@ var _Polygon = __webpack_require__(1);
 
 var _Polygon2 = _interopRequireDefault(_Polygon);
 
-var _Pyramid = __webpack_require__(11);
+var _Listener = __webpack_require__(11);
+
+var _Listener2 = _interopRequireDefault(_Listener);
+
+var _Pyramid = __webpack_require__(13);
 
 var _Pyramid2 = _interopRequireDefault(_Pyramid);
 
-var _Rect = __webpack_require__(12);
+var _Rect = __webpack_require__(14);
 
 var _Rect2 = _interopRequireDefault(_Rect);
 
@@ -363,6 +397,8 @@ exports.default = {
 
   Group: _Group2.default,
   Polygon: _Polygon2.default,
+  Listener: _Listener2.default,
+
   Pyramid: _Pyramid2.default,
   Rect: _Rect2.default,
 
@@ -370,7 +406,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -396,7 +432,7 @@ exports.default = function () {
 };
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -407,11 +443,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.meshLib = exports.IsometricProjection = undefined;
 
-var _IsometricProjection = __webpack_require__(5);
+var _IsometricProjection = __webpack_require__(6);
 
 var _IsometricProjection2 = _interopRequireDefault(_IsometricProjection);
 
-var _index = __webpack_require__(6);
+var _index = __webpack_require__(7);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -421,7 +457,7 @@ exports.IsometricProjection = _IsometricProjection2.default;
 exports.meshLib = _index2.default;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -431,7 +467,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _flattenSubarraysIntoParent = __webpack_require__(13);
+var _flattenSubarraysIntoParent = __webpack_require__(3);
 
 var _flattenSubarraysIntoParent2 = _interopRequireDefault(_flattenSubarraysIntoParent);
 
@@ -460,7 +496,7 @@ exports.default = function (_ref) {
 };
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -470,7 +506,35 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _flattenTagsIntoPolyArr = __webpack_require__(3);
+var _flattenSubarraysIntoParent = __webpack_require__(3);
+
+var _flattenSubarraysIntoParent2 = _interopRequireDefault(_flattenSubarraysIntoParent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (_ref) {
+  var listeners = _ref.listeners,
+      children = _ref.children;
+
+  return {
+    type: 'LISTENER',
+    listeners: listeners,
+    children: (0, _flattenSubarraysIntoParent2.default)(children)
+  };
+};
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _flattenTagsIntoPolyArr = __webpack_require__(4);
 
 var _flattenTagsIntoPolyArr2 = _interopRequireDefault(_flattenTagsIntoPolyArr);
 
@@ -487,7 +551,7 @@ exports.default = function (_ref) {
 };
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -497,7 +561,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _parseColors = __webpack_require__(4);
+var _parseColors = __webpack_require__(5);
 
 var _parseColors2 = _interopRequireDefault(_parseColors);
 
@@ -534,7 +598,7 @@ exports.default = function (_ref) {
 };
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -550,7 +614,7 @@ var _jsxToObj = __webpack_require__(2);
 
 var _jsxToObj2 = _interopRequireDefault(_jsxToObj);
 
-var _parseColors = __webpack_require__(4);
+var _parseColors = __webpack_require__(5);
 
 var _parseColors2 = _interopRequireDefault(_parseColors);
 
@@ -607,24 +671,7 @@ exports.default = function (_ref) {
 };
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (parentArr) {
-  return parentArr.reduce(function (arr, item) {
-    return Array.isArray(item) ? arr.concat(item) : arr.concat([item]);
-  }, []);
-};
-
-/***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -686,7 +733,7 @@ exports.default = function (_ref, _ref2) {
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = require("react");
